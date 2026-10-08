@@ -1,8 +1,11 @@
 ﻿using ClassDemoTransaction.model;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,12 +14,18 @@ namespace ClassDemoTransaction.services
     public class MyDBTransaction
     {
         // instans felter
-        private const string _connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=2semDemo;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+        //private const string _connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=2semDemo;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
         private SqlConnection _conn;
 
 
         private void ConnectToDB()
         {
+            IConfigurationRoot config = new ConfigurationBuilder()
+                .AddUserSecrets(Assembly.GetExecutingAssembly(), optional: true)
+                .Build();
+
+            String _connectionString = config["PetersConnectionString"];
+
             _conn = new SqlConnection(_connectionString);
             _conn.Open();
         }
